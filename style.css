@@ -11,17 +11,14 @@ body {
     color: white;
 }
 
-/* =========================
-   CLASSES GERAIS
-========================= */
-
 .hidden {
     display: none !important;
 }
 
-/* =========================
-   CABEÇALHO DO CALENDÁRIO
-========================= */
+
+/* ==========================================
+   CABEÇALHO PRINCIPAL
+========================================== */
 
 .main-header {
     width: 100%;
@@ -35,9 +32,10 @@ body {
     font-size: 36px;
 }
 
-/* =========================
+
+/* ==========================================
    LOGO
-========================= */
+========================================== */
 
 .logo {
     display: flex;
@@ -55,9 +53,10 @@ body {
     border-radius: 8px;
 }
 
-/* =========================
+
+/* ==========================================
    CALENDÁRIO
-========================= */
+========================================== */
 
 .calendar-container {
     width: 90%;
@@ -70,24 +69,27 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* =========================
+
+/* ==========================================
    TOPO DO CALENDÁRIO
-========================= */
+========================================== */
 
 .calendar-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
+    position: relative;
 }
 
 .calendar-top h2 {
     font-size: 30px;
     color: #7b2cbf;
     text-align: center;
+    flex: 1;
 }
 
-.calendar-top button {
+.calendar-top > button {
     width: 55px;
     height: 55px;
     border: none;
@@ -96,15 +98,78 @@ body {
     color: white;
     font-size: 30px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
-.calendar-top button:hover {
+.calendar-top > button:hover {
     background: #5a189a;
 }
 
-/* =========================
+
+/* ==========================================
+   MENU DOS TRÊS PONTINHOS
+========================================== */
+
+.month-options {
+    position: relative;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.month-menu-button {
+    width: 45px !important;
+    height: 45px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #7b2cbf !important;
+    font-size: 30px !important;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.month-menu-button:hover {
+    background: #f0e3ff !important;
+}
+
+
+/* Menu que aparece ao clicar nos três pontinhos */
+
+.month-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 210px;
+    background: white;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+
+/* Botão excluir */
+
+#deleteMonthButton {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #d00000;
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#deleteMonthButton:hover {
+    background: #ffe5e5;
+}
+
+
+/* ==========================================
    DIAS DA SEMANA
-========================= */
+========================================== */
 
 .weekdays {
     display: grid;
@@ -121,9 +186,10 @@ body {
     padding: 10px 0;
 }
 
-/* =========================
-   DIAS DO CALENDÁRIO
-========================= */
+
+/* ==========================================
+   GRADE DO CALENDÁRIO
+========================================== */
 
 .calendar-grid {
     display: grid;
@@ -168,8 +234,6 @@ body {
     border-color: #7b2cbf;
 }
 
-/* Indicador de tarefas */
-
 .task-indicator {
     position: absolute;
     bottom: 8px;
@@ -183,9 +247,10 @@ body {
     color: white;
 }
 
-/* =========================
+
+/* ==========================================
    PÁGINA DE TAREFAS
-========================= */
+========================================== */
 
 .tasks-header {
     padding: 25px 40px;
@@ -233,19 +298,16 @@ body {
     margin-top: 5px;
 }
 
-/* =========================
-   CONTAINER DAS TAREFAS
-========================= */
+
+/* ==========================================
+   TAREFAS
+========================================== */
 
 .tasks-container {
     width: 90%;
     max-width: 800px;
     margin: 20px auto;
 }
-
-/* =========================
-   ADICIONAR TAREFA
-========================= */
 
 .new-task-container {
     display: flex;
@@ -273,10 +335,6 @@ body {
     font-size: 30px;
     cursor: pointer;
 }
-
-/* =========================
-   TAREFAS
-========================= */
 
 .task-list {
     display: flex;
@@ -325,19 +383,16 @@ body {
     color: #888;
 }
 
-/* =========================
-   MENSAGEM VAZIA
-========================= */
-
 .empty-message {
     text-align: center;
     padding: 25px;
     color: white;
 }
 
-/* =========================
+
+/* ==========================================
    TAREFAS CONCLUÍDAS
-========================= */
+========================================== */
 
 .completed-section {
     margin-top: 30px;
@@ -380,9 +435,10 @@ body {
     margin-top: 10px;
 }
 
-/* =========================
+
+/* ==========================================
    CELULAR
-========================= */
+========================================== */
 
 @media (max-width: 700px) {
 
@@ -416,10 +472,27 @@ body {
         font-size: 22px;
     }
 
-    .calendar-top button {
+    .calendar-top > button {
         width: 42px;
         height: 42px;
         font-size: 23px;
+    }
+
+    .month-options {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+
+    .month-menu-button {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 26px !important;
+    }
+
+    .month-menu {
+        top: 45px;
+        right: 0;
+        width: 190px;
     }
 
     .weekdays {
