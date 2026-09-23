@@ -7,17 +7,10 @@
 // ELEMENTOS DO CALENDÁRIO
 // ==========================================
 
-const calendar =
-    document.getElementById("calendar");
-
-const monthTitle =
-    document.getElementById("monthTitle");
-
-const previousMonth =
-    document.getElementById("previousMonth");
-
-const nextMonth =
-    document.getElementById("nextMonth");
+const calendar = document.getElementById("calendar");
+const monthTitle = document.getElementById("monthTitle");
+const previousMonth = document.getElementById("previousMonth");
+const nextMonth = document.getElementById("nextMonth");
 
 
 // ==========================================
@@ -87,6 +80,9 @@ const completedArrow =
 
 const STORAGE_KEY = "agendaTasks";
 
+const DELETED_MONTHS_KEY =
+    "agendaDeletedMonths";
+
 const MIN_YEAR = 2026;
 
 const MAX_YEAR = 2030;
@@ -103,24 +99,20 @@ const today = new Date();
 // DATA SELECIONADA
 // ==========================================
 
-let selectedDate =
-    new Date();
+let selectedDate = new Date();
 
 
-// Se a data atual estiver fora do período
-// da agenda
-
+// Se estiver fora do período da agenda
 if (
     selectedDate.getFullYear() < MIN_YEAR ||
     selectedDate.getFullYear() > MAX_YEAR
 ) {
 
-    selectedDate =
-        new Date(
-            2026,
-            0,
-            1
-        );
+    selectedDate = new Date(
+        MIN_YEAR,
+        0,
+        1
+    );
 }
 
 
@@ -143,19 +135,16 @@ let completedIsOpen = false;
 
 
 // ==========================================
-// FUNÇÃO PARA PEGAR AS TAREFAS
+// PEGAR TAREFAS
 // ==========================================
 
 function getTasks() {
 
     const saved =
-        localStorage.getItem(
-            STORAGE_KEY
-        );
+        localStorage.getItem(STORAGE_KEY);
 
 
     if (!saved) {
-
         return {};
     }
 
@@ -185,7 +174,7 @@ function saveTasks(tasks) {
 
 
 // ==========================================
-// CRIAR CHAVE DA DATA
+// CHAVE DA DATA
 // ==========================================
 
 function getDateKey(date) {
@@ -209,6 +198,91 @@ function getDateKey(date) {
 
 
 // ==========================================
+// CHAVE DO MÊS
+// ==========================================
+
+function getMonthKey(year, month) {
+
+    return `${year}-${String(
+        month + 1
+    ).padStart(2, "0")}`;
+}
+
+
+// ==========================================
+// PEGAR MESES EXCLUÍDOS
+// ==========================================
+
+function getDeletedMonths() {
+
+    const saved =
+        localStorage.getItem(
+            DELETED_MONTHS_KEY
+        );
+
+
+    if (!saved) {
+        return [];
+    }
+
+
+    try {
+
+        const months =
+            JSON.parse(saved);
+
+
+        if (Array.isArray(months)) {
+            return months;
+        }
+
+
+        return [];
+
+    } catch {
+
+        return [];
+    }
+}
+
+
+// ==========================================
+// SALVAR MESES EXCLUÍDOS
+// ==========================================
+
+function saveDeletedMonths(months) {
+
+    localStorage.setItem(
+        DELETED_MONTHS_KEY,
+        JSON.stringify(months)
+    );
+}
+
+
+// ==========================================
+// VERIFICAR SE MÊS FOI EXCLUÍDO
+// ==========================================
+
+function isMonthDeleted(year, month) {
+
+    const monthKey =
+        getMonthKey(
+            year,
+            month
+        );
+
+
+    const deletedMonths =
+        getDeletedMonths();
+
+
+    return deletedMonths.includes(
+        monthKey
+    );
+}
+
+
+// ==========================================
 // PEGAR TAREFAS DE UM DIA
 // ==========================================
 
@@ -216,6 +290,7 @@ function getTasksForDate(date) {
 
     const tasks =
         getTasks();
+
 
     const key =
         getDateKey(date);
@@ -237,6 +312,7 @@ function saveTasksForDate(
     const tasks =
         getTasks();
 
+
     const key =
         getDateKey(date);
 
@@ -250,7 +326,7 @@ function saveTasksForDate(
 
 
 // ==========================================
-// VERIFICAR SE O MÊS JÁ PASSOU
+// VERIFICAR SE MÊS JÁ PASSOU
 // ==========================================
 
 function isPastMonth(
@@ -287,7 +363,7 @@ function isPastMonth(
 
 
 // ==========================================
-// ATUALIZAR VISIBILIDADE DA OPÇÃO
+// ATUALIZAR MENU
 // ==========================================
 
 function updateMonthMenu() {
@@ -313,6 +389,100 @@ function updateMonthMenu() {
 
 
 // ==========================================
+// ENCONTRAR MÊS DISPONÍVEL ANTERIOR
+// ==========================================
+
+function findPreviousAvailableMonth() {
+
+    let year =
+        displayedYear;
+
+    let month =
+        displayedMonth;
+
+
+    while (true) {
+
+        month--;
+
+
+        if (month < 0) {
+
+            month = 11;
+            year--;
+        }
+
+
+        if (year < MIN_YEAR) {
+
+            return null;
+        }
+
+
+        if (
+            !isMonthDeleted(
+                year,
+                month
+            )
+        ) {
+
+            return {
+                year: year,
+                month: month
+            };
+        }
+    }
+}
+
+
+// ==========================================
+// ENCONTRAR PRÓXIMO MÊS DISPONÍVEL
+// ==========================================
+
+function findNextAvailableMonth() {
+
+    let year =
+        displayedYear;
+
+    let month =
+        displayedMonth;
+
+
+    while (true) {
+
+        month++;
+
+
+        if (month > 11) {
+
+            month = 0;
+            year++;
+        }
+
+
+        if (year > MAX_YEAR) {
+
+            return null;
+        }
+
+
+        if (
+            !isMonthDeleted(
+                year,
+                month
+            )
+        ) {
+
+            return {
+                year: year,
+                month: month
+            };
+        }
+    }
+}
+
+
+// ==========================================
 // CALENDÁRIO
 // ==========================================
 
@@ -322,7 +492,7 @@ function renderCalendar() {
 
 
     // ======================================
-    // NOME DO MÊS
+    // TÍTULO DO MÊS
     // ======================================
 
     const dateForTitle =
@@ -349,14 +519,14 @@ function renderCalendar() {
 
 
     // ======================================
-    // ATUALIZAR MENU
+    // MENU
     // ======================================
 
     updateMonthMenu();
 
 
     // ======================================
-    // PRIMEIRO DIA DO MÊS
+    // PRIMEIRO DIA
     // ======================================
 
     const firstDay =
@@ -368,7 +538,7 @@ function renderCalendar() {
 
 
     // ======================================
-    // QUANTIDADE DE DIAS
+    // DIAS DO MÊS
     // ======================================
 
     const daysInMonth =
@@ -388,7 +558,7 @@ function renderCalendar() {
 
 
     // ======================================
-    // ESPAÇOS ANTES DO PRIMEIRO DIA
+    // ESPAÇOS INICIAIS
     // ======================================
 
     for (
@@ -402,6 +572,7 @@ function renderCalendar() {
                 "div"
             );
 
+
         empty.className =
             "calendar-day empty";
 
@@ -413,7 +584,7 @@ function renderCalendar() {
 
 
     // ======================================
-    // CRIAR DIAS
+    // DIAS
     // ======================================
 
     for (
@@ -440,9 +611,7 @@ function renderCalendar() {
             "calendar-day";
 
 
-        // ==================================
-        // NÚMERO DO DIA
-        // ==================================
+        // Número do dia
 
         const number =
             document.createElement(
@@ -459,9 +628,7 @@ function renderCalendar() {
         );
 
 
-        // ==================================
-        // VERIFICAR SE É HOJE
-        // ==================================
+        // Verificar hoje
 
         const isToday =
             date.getDate() === today.getDate() &&
@@ -477,9 +644,7 @@ function renderCalendar() {
         }
 
 
-        // ==================================
-        // VERIFICAR TAREFAS
-        // ==================================
+        // Verificar tarefas
 
         const dayTasks =
             getTasksForDate(
@@ -511,9 +676,7 @@ function renderCalendar() {
         }
 
 
-        // ==================================
-        // CLICAR NO DIA
-        // ==================================
+        // Abrir tarefas
 
         dayElement.addEventListener(
             "click",
@@ -543,29 +706,20 @@ previousMonth.addEventListener(
     "click",
     function () {
 
-        displayedMonth--;
+        const previous =
+            findPreviousAvailableMonth();
 
 
-        if (
-            displayedMonth < 0
-        ) {
-
-            displayedMonth = 11;
-
-            displayedYear--;
+        if (!previous) {
+            return;
         }
 
 
-        if (
-            displayedYear < MIN_YEAR
-        ) {
+        displayedYear =
+            previous.year;
 
-            displayedYear =
-                MIN_YEAR;
-
-            displayedMonth =
-                0;
-        }
+        displayedMonth =
+            previous.month;
 
 
         closeMonthMenu();
@@ -583,29 +737,20 @@ nextMonth.addEventListener(
     "click",
     function () {
 
-        displayedMonth++;
+        const next =
+            findNextAvailableMonth();
 
 
-        if (
-            displayedMonth > 11
-        ) {
-
-            displayedMonth = 0;
-
-            displayedYear++;
+        if (!next) {
+            return;
         }
 
 
-        if (
-            displayedYear > MAX_YEAR
-        ) {
+        displayedYear =
+            next.year;
 
-            displayedYear =
-                MAX_YEAR;
-
-            displayedMonth =
-                11;
-        }
+        displayedMonth =
+            next.month;
 
 
         closeMonthMenu();
@@ -642,8 +787,11 @@ document.addEventListener(
     function (event) {
 
         if (
-            !monthMenu.contains(event.target) &&
-            event.target !== monthMenuButton
+            !monthMenu.contains(
+                event.target
+            ) &&
+            event.target !==
+                monthMenuButton
         ) {
 
             closeMonthMenu();
@@ -672,9 +820,7 @@ deleteMonthButton.addEventListener(
     "click",
     function () {
 
-        // Segurança:
-        // não permite apagar mês atual
-        // ou mês futuro.
+        // Só pode excluir meses passados
 
         if (
             !isPastMonth(
@@ -712,33 +858,23 @@ deleteMonthButton.addEventListener(
 
 
         if (!confirmation) {
-
             return;
         }
 
 
         // ==================================
-        // PEGAR TODAS AS TAREFAS
+        // 1. APAGAR TAREFAS DO MÊS
         // ==================================
 
         const tasks =
             getTasks();
 
 
-        // ==================================
-        // CHAVES DO MÊS
-        // ==================================
-
         const prefix =
             `${displayedYear}-${String(
                 displayedMonth + 1
             ).padStart(2, "0")}-`;
 
-
-        // ==================================
-        // APAGAR TODAS AS TAREFAS
-        // DESSE MÊS
-        // ==================================
 
         Object.keys(tasks).forEach(
             key => {
@@ -753,43 +889,76 @@ deleteMonthButton.addEventListener(
         );
 
 
-        // ==================================
-        // SALVAR NOVAMENTE
-        // ==================================
-
         saveTasks(tasks);
 
 
         // ==================================
-        // IR PARA O MÊS ANTERIOR
+        // 2. REGISTRAR MÊS COMO EXCLUÍDO
         // ==================================
 
-        displayedMonth--;
+        const deletedMonths =
+            getDeletedMonths();
+
+
+        const monthKey =
+            getMonthKey(
+                displayedYear,
+                displayedMonth
+            );
 
 
         if (
-            displayedMonth < 0
+            !deletedMonths.includes(
+                monthKey
+            )
         ) {
 
-            displayedMonth = 11;
-
-            displayedYear--;
+            deletedMonths.push(
+                monthKey
+            );
         }
 
 
+        saveDeletedMonths(
+            deletedMonths
+        );
+
+
         // ==================================
-        // NÃO PASSAR DO LIMITE
+        // 3. IR PARA O MÊS ANTERIOR
+        //    QUE NÃO FOI EXCLUÍDO
         // ==================================
 
-        if (
-            displayedYear < MIN_YEAR
-        ) {
+        let previous =
+            findPreviousAvailableMonth();
+
+
+        // Se não houver mês anterior,
+        // procura o próximo disponível.
+
+        if (!previous) {
+
+            const next =
+                findNextAvailableMonth();
+
+
+            if (next) {
+
+                displayedYear =
+                    next.year;
+
+                displayedMonth =
+                    next.month;
+
+            }
+
+        } else {
 
             displayedYear =
-                MIN_YEAR;
+                previous.year;
 
             displayedMonth =
-                0;
+                previous.month;
         }
 
 
@@ -837,7 +1006,7 @@ function openTasksPage() {
 
 
 // ==========================================
-// VOLTAR PARA O CALENDÁRIO
+// VOLTAR PARA CALENDÁRIO
 // ==========================================
 
 backToCalendar.addEventListener(
@@ -854,12 +1023,37 @@ backToCalendar.addEventListener(
         );
 
 
-        displayedYear =
-            selectedDate.getFullYear();
+        // Se o mês selecionado foi excluído,
+        // volta para um mês disponível.
+
+        if (
+            isMonthDeleted(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth()
+            )
+        ) {
+
+            const next =
+                findNextAvailableMonth();
 
 
-        displayedMonth =
-            selectedDate.getMonth();
+            if (next) {
+
+                displayedYear =
+                    next.year;
+
+                displayedMonth =
+                    next.month;
+            }
+
+        } else {
+
+            displayedYear =
+                selectedDate.getFullYear();
+
+            displayedMonth =
+                selectedDate.getMonth();
+        }
 
 
         renderCalendar();
@@ -868,7 +1062,7 @@ backToCalendar.addEventListener(
 
 
 // ==========================================
-// MOSTRAR DATA DA TAREFA
+// MOSTRAR DATA
 // ==========================================
 
 function updateCurrentDate() {
@@ -918,6 +1112,17 @@ previousDay.addEventListener(
         }
 
 
+        if (
+            isMonthDeleted(
+                newDate.getFullYear(),
+                newDate.getMonth()
+            )
+        ) {
+
+            return;
+        }
+
+
         selectedDate =
             newDate;
 
@@ -948,6 +1153,17 @@ nextDay.addEventListener(
 
         if (
             newDate.getFullYear() > MAX_YEAR
+        ) {
+
+            return;
+        }
+
+
+        if (
+            isMonthDeleted(
+                newDate.getFullYear(),
+                newDate.getMonth()
+            )
         ) {
 
             return;
@@ -1088,9 +1304,7 @@ function renderTasks() {
         );
 
 
-    // ======================================
-    // TAREFAS ATIVAS
-    // ======================================
+    // Tarefas ativas
 
     active.forEach(
         task => {
@@ -1104,9 +1318,7 @@ function renderTasks() {
     );
 
 
-    // ======================================
-    // TAREFAS CONCLUÍDAS
-    // ======================================
+    // Tarefas concluídas
 
     completed.forEach(
         task => {
@@ -1120,9 +1332,7 @@ function renderTasks() {
     );
 
 
-    // ======================================
-    // MENSAGEM
-    // ======================================
+    // Mensagem
 
     if (
         active.length === 0
@@ -1138,9 +1348,7 @@ function renderTasks() {
     }
 
 
-    // ======================================
-    // CONTADOR
-    // ======================================
+    // Contador
 
     completedCount.textContent =
         completed.length;
@@ -1173,9 +1381,7 @@ function createTaskElement(task) {
     }
 
 
-    // ======================================
-    // CHECKBOX
-    // ======================================
+    // Checkbox
 
     const checkbox =
         document.createElement(
@@ -1206,9 +1412,7 @@ function createTaskElement(task) {
     );
 
 
-    // ======================================
-    // TEXTO
-    // ======================================
+    // Texto
 
     const text =
         document.createElement(
@@ -1224,9 +1428,7 @@ function createTaskElement(task) {
         task.text;
 
 
-    // ======================================
-    // BOTÃO EXCLUIR
-    // ======================================
+    // Botão excluir
 
     const deleteButton =
         document.createElement(
@@ -1256,10 +1458,6 @@ function createTaskElement(task) {
         }
     );
 
-
-    // ======================================
-    // ADICIONAR ELEMENTOS
-    // ======================================
 
     item.appendChild(
         checkbox
@@ -1300,7 +1498,6 @@ function toggleTask(taskId) {
 
 
     if (!task) {
-
         return;
     }
 
