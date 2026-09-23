@@ -2,32 +2,83 @@
 // AGENDA
 // ==========================================
 
-// Elementos do calendário
-const calendar = document.getElementById("calendar");
-const monthTitle = document.getElementById("monthTitle");
-const previousMonth = document.getElementById("previousMonth");
-const nextMonth = document.getElementById("nextMonth");
 
-// Elementos da página de tarefas
-const calendarPage = document.getElementById("calendarPage");
-const tasksPage = document.getElementById("tasksPage");
+// ==========================================
+// ELEMENTOS DO CALENDÁRIO
+// ==========================================
 
-const backToCalendar = document.getElementById("backToCalendar");
-const previousDay = document.getElementById("previousDay");
-const nextDay = document.getElementById("nextDay");
+const calendar =
+    document.getElementById("calendar");
 
-const currentDate = document.getElementById("currentDate");
+const monthTitle =
+    document.getElementById("monthTitle");
 
-const newTaskInput = document.getElementById("newTaskInput");
-const addTaskButton = document.getElementById("addTaskButton");
+const previousMonth =
+    document.getElementById("previousMonth");
 
-const activeTasks = document.getElementById("activeTasks");
-const emptyMessage = document.getElementById("emptyMessage");
+const nextMonth =
+    document.getElementById("nextMonth");
 
-const toggleCompleted = document.getElementById("toggleCompleted");
-const completedTasks = document.getElementById("completedTasks");
-const completedCount = document.getElementById("completedCount");
-const completedArrow = document.getElementById("completedArrow");
+
+// ==========================================
+// MENU DO MÊS
+// ==========================================
+
+const monthMenuButton =
+    document.getElementById("monthMenuButton");
+
+const monthMenu =
+    document.getElementById("monthMenu");
+
+const deleteMonthButton =
+    document.getElementById("deleteMonthButton");
+
+
+// ==========================================
+// ELEMENTOS DA PÁGINA DE TAREFAS
+// ==========================================
+
+const calendarPage =
+    document.getElementById("calendarPage");
+
+const tasksPage =
+    document.getElementById("tasksPage");
+
+const backToCalendar =
+    document.getElementById("backToCalendar");
+
+const previousDay =
+    document.getElementById("previousDay");
+
+const nextDay =
+    document.getElementById("nextDay");
+
+const currentDate =
+    document.getElementById("currentDate");
+
+const newTaskInput =
+    document.getElementById("newTaskInput");
+
+const addTaskButton =
+    document.getElementById("addTaskButton");
+
+const activeTasks =
+    document.getElementById("activeTasks");
+
+const emptyMessage =
+    document.getElementById("emptyMessage");
+
+const toggleCompleted =
+    document.getElementById("toggleCompleted");
+
+const completedTasks =
+    document.getElementById("completedTasks");
+
+const completedCount =
+    document.getElementById("completedCount");
+
+const completedArrow =
+    document.getElementById("completedArrow");
 
 
 // ==========================================
@@ -37,24 +88,39 @@ const completedArrow = document.getElementById("completedArrow");
 const STORAGE_KEY = "agendaTasks";
 
 const MIN_YEAR = 2026;
+
 const MAX_YEAR = 2030;
+
+
+// ==========================================
+// DATA ATUAL
+// ==========================================
+
+const today = new Date();
 
 
 // ==========================================
 // DATA SELECIONADA
 // ==========================================
 
-let selectedDate = new Date();
+let selectedDate =
+    new Date();
 
 
 // Se a data atual estiver fora do período
-// da agenda, usamos 01/01/2026.
+// da agenda
 
 if (
     selectedDate.getFullYear() < MIN_YEAR ||
     selectedDate.getFullYear() > MAX_YEAR
 ) {
-    selectedDate = new Date(2026, 0, 1);
+
+    selectedDate =
+        new Date(
+            2026,
+            0,
+            1
+        );
 }
 
 
@@ -62,8 +128,11 @@ if (
 // MÊS EXIBIDO
 // ==========================================
 
-let displayedYear = selectedDate.getFullYear();
-let displayedMonth = selectedDate.getMonth();
+let displayedYear =
+    selectedDate.getFullYear();
+
+let displayedMonth =
+    selectedDate.getMonth();
 
 
 // ==========================================
@@ -80,15 +149,23 @@ let completedIsOpen = false;
 function getTasks() {
 
     const saved =
-        localStorage.getItem(STORAGE_KEY);
+        localStorage.getItem(
+            STORAGE_KEY
+        );
+
 
     if (!saved) {
+
         return {};
     }
 
+
     try {
+
         return JSON.parse(saved);
+
     } catch {
+
         return {};
     }
 }
@@ -117,10 +194,15 @@ function getDateKey(date) {
         date.getFullYear();
 
     const month =
-        String(date.getMonth() + 1).padStart(2, "0");
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
     const day =
-        String(date.getDate()).padStart(2, "0");
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
 
     return `${year}-${month}-${day}`;
 }
@@ -132,9 +214,12 @@ function getDateKey(date) {
 
 function getTasksForDate(date) {
 
-    const tasks = getTasks();
+    const tasks =
+        getTasks();
 
-    const key = getDateKey(date);
+    const key =
+        getDateKey(date);
+
 
     return tasks[key] || [];
 }
@@ -144,15 +229,86 @@ function getTasksForDate(date) {
 // SALVAR TAREFAS DE UM DIA
 // ==========================================
 
-function saveTasksForDate(date, dayTasks) {
+function saveTasksForDate(
+    date,
+    dayTasks
+) {
 
-    const tasks = getTasks();
+    const tasks =
+        getTasks();
 
-    const key = getDateKey(date);
+    const key =
+        getDateKey(date);
 
-    tasks[key] = dayTasks;
+
+    tasks[key] =
+        dayTasks;
+
 
     saveTasks(tasks);
+}
+
+
+// ==========================================
+// VERIFICAR SE O MÊS JÁ PASSOU
+// ==========================================
+
+function isPastMonth(
+    year,
+    month
+) {
+
+    const currentYear =
+        today.getFullYear();
+
+    const currentMonth =
+        today.getMonth();
+
+
+    if (
+        year < currentYear
+    ) {
+
+        return true;
+    }
+
+
+    if (
+        year === currentYear &&
+        month < currentMonth
+    ) {
+
+        return true;
+    }
+
+
+    return false;
+}
+
+
+// ==========================================
+// ATUALIZAR VISIBILIDADE DA OPÇÃO
+// ==========================================
+
+function updateMonthMenu() {
+
+    if (
+        isPastMonth(
+            displayedYear,
+            displayedMonth
+        )
+    ) {
+
+        deleteMonthButton.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        deleteMonthButton.classList.add(
+            "hidden"
+        );
+    }
 }
 
 
@@ -165,7 +321,9 @@ function renderCalendar() {
     calendar.innerHTML = "";
 
 
-    // Nome do mês
+    // ======================================
+    // NOME DO MÊS
+    // ======================================
 
     const dateForTitle =
         new Date(
@@ -190,7 +348,16 @@ function renderCalendar() {
         monthName.slice(1);
 
 
-    // Primeiro dia do mês
+    // ======================================
+    // ATUALIZAR MENU
+    // ======================================
+
+    updateMonthMenu();
+
+
+    // ======================================
+    // PRIMEIRO DIA DO MÊS
+    // ======================================
 
     const firstDay =
         new Date(
@@ -200,7 +367,9 @@ function renderCalendar() {
         );
 
 
-    // Quantidade de dias no mês
+    // ======================================
+    // QUANTIDADE DE DIAS
+    // ======================================
 
     const daysInMonth =
         new Date(
@@ -210,16 +379,17 @@ function renderCalendar() {
         ).getDate();
 
 
-    // Dia da semana do primeiro dia
-    // Domingo = 0
-    // Segunda = 1
-    // etc.
+    // ======================================
+    // DIA DA SEMANA
+    // ======================================
 
     const startingDay =
         firstDay.getDay();
 
 
-    // Espaços antes do primeiro dia
+    // ======================================
+    // ESPAÇOS ANTES DO PRIMEIRO DIA
+    // ======================================
 
     for (
         let i = 0;
@@ -228,16 +398,23 @@ function renderCalendar() {
     ) {
 
         const empty =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         empty.className =
             "calendar-day empty";
 
-        calendar.appendChild(empty);
+
+        calendar.appendChild(
+            empty
+        );
     }
 
 
-    // Criar os dias
+    // ======================================
+    // CRIAR DIAS
+    // ======================================
 
     for (
         let day = 1;
@@ -254,26 +431,37 @@ function renderCalendar() {
 
 
         const dayElement =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         dayElement.className =
             "calendar-day";
 
 
-        // Número do dia
+        // ==================================
+        // NÚMERO DO DIA
+        // ==================================
 
         const number =
-            document.createElement("span");
-
-        number.textContent = day;
-
-        dayElement.appendChild(number);
+            document.createElement(
+                "span"
+            );
 
 
-        // Verificar se é hoje
+        number.textContent =
+            day;
 
-        const today =
-            new Date();
+
+        dayElement.appendChild(
+            number
+        );
+
+
+        // ==================================
+        // VERIFICAR SE É HOJE
+        // ==================================
 
         const isToday =
             date.getDate() === today.getDate() &&
@@ -289,22 +477,33 @@ function renderCalendar() {
         }
 
 
-        // Verificar se existem tarefas
+        // ==================================
+        // VERIFICAR TAREFAS
+        // ==================================
 
         const dayTasks =
-            getTasksForDate(date);
+            getTasksForDate(
+                date
+            );
 
 
-        if (dayTasks.length > 0) {
+        if (
+            dayTasks.length > 0
+        ) {
 
             const indicator =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             indicator.className =
                 "task-indicator";
 
+
             indicator.textContent =
                 "•";
+
 
             dayElement.appendChild(
                 indicator
@@ -312,7 +511,9 @@ function renderCalendar() {
         }
 
 
-        // Clicar no dia
+        // ==================================
+        // CLICAR NO DIA
+        // ==================================
 
         dayElement.addEventListener(
             "click",
@@ -320,6 +521,7 @@ function renderCalendar() {
 
                 selectedDate =
                     new Date(date);
+
 
                 openTasksPage();
             }
@@ -344,7 +546,9 @@ previousMonth.addEventListener(
         displayedMonth--;
 
 
-        if (displayedMonth < 0) {
+        if (
+            displayedMonth < 0
+        ) {
 
             displayedMonth = 11;
 
@@ -352,13 +556,19 @@ previousMonth.addEventListener(
         }
 
 
-        if (displayedYear < MIN_YEAR) {
+        if (
+            displayedYear < MIN_YEAR
+        ) {
 
-            displayedYear = MIN_YEAR;
+            displayedYear =
+                MIN_YEAR;
 
-            displayedMonth = 0;
+            displayedMonth =
+                0;
         }
 
+
+        closeMonthMenu();
 
         renderCalendar();
     }
@@ -376,7 +586,9 @@ nextMonth.addEventListener(
         displayedMonth++;
 
 
-        if (displayedMonth > 11) {
+        if (
+            displayedMonth > 11
+        ) {
 
             displayedMonth = 0;
 
@@ -384,13 +596,204 @@ nextMonth.addEventListener(
         }
 
 
-        if (displayedYear > MAX_YEAR) {
+        if (
+            displayedYear > MAX_YEAR
+        ) {
 
-            displayedYear = MAX_YEAR;
+            displayedYear =
+                MAX_YEAR;
 
-            displayedMonth = 11;
+            displayedMonth =
+                11;
         }
 
+
+        closeMonthMenu();
+
+        renderCalendar();
+    }
+);
+
+
+// ==========================================
+// ABRIR / FECHAR MENU
+// ==========================================
+
+monthMenuButton.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+
+        monthMenu.classList.toggle(
+            "hidden"
+        );
+    }
+);
+
+
+// ==========================================
+// FECHAR MENU AO CLICAR FORA
+// ==========================================
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            !monthMenu.contains(event.target) &&
+            event.target !== monthMenuButton
+        ) {
+
+            closeMonthMenu();
+        }
+    }
+);
+
+
+// ==========================================
+// FECHAR MENU
+// ==========================================
+
+function closeMonthMenu() {
+
+    monthMenu.classList.add(
+        "hidden"
+    );
+}
+
+
+// ==========================================
+// EXCLUIR MÊS
+// ==========================================
+
+deleteMonthButton.addEventListener(
+    "click",
+    function () {
+
+        // Segurança:
+        // não permite apagar mês atual
+        // ou mês futuro.
+
+        if (
+            !isPastMonth(
+                displayedYear,
+                displayedMonth
+            )
+        ) {
+
+            return;
+        }
+
+
+        const monthDate =
+            new Date(
+                displayedYear,
+                displayedMonth,
+                1
+            );
+
+
+        const monthName =
+            monthDate.toLocaleDateString(
+                "pt-BR",
+                {
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+
+        const confirmation =
+            confirm(
+                `Excluir ${monthName}?\n\nTodas as tarefas deste mês serão apagadas permanentemente.`
+            );
+
+
+        if (!confirmation) {
+
+            return;
+        }
+
+
+        // ==================================
+        // PEGAR TODAS AS TAREFAS
+        // ==================================
+
+        const tasks =
+            getTasks();
+
+
+        // ==================================
+        // CHAVES DO MÊS
+        // ==================================
+
+        const prefix =
+            `${displayedYear}-${String(
+                displayedMonth + 1
+            ).padStart(2, "0")}-`;
+
+
+        // ==================================
+        // APAGAR TODAS AS TAREFAS
+        // DESSE MÊS
+        // ==================================
+
+        Object.keys(tasks).forEach(
+            key => {
+
+                if (
+                    key.startsWith(prefix)
+                ) {
+
+                    delete tasks[key];
+                }
+            }
+        );
+
+
+        // ==================================
+        // SALVAR NOVAMENTE
+        // ==================================
+
+        saveTasks(tasks);
+
+
+        // ==================================
+        // IR PARA O MÊS ANTERIOR
+        // ==================================
+
+        displayedMonth--;
+
+
+        if (
+            displayedMonth < 0
+        ) {
+
+            displayedMonth = 11;
+
+            displayedYear--;
+        }
+
+
+        // ==================================
+        // NÃO PASSAR DO LIMITE
+        // ==================================
+
+        if (
+            displayedYear < MIN_YEAR
+        ) {
+
+            displayedYear =
+                MIN_YEAR;
+
+            displayedMonth =
+                0;
+        }
+
+
+        closeMonthMenu();
 
         renderCalendar();
     }
@@ -407,22 +810,27 @@ function openTasksPage() {
         "hidden"
     );
 
+
     tasksPage.classList.remove(
         "hidden"
     );
 
 
-    completedIsOpen = false;
+    completedIsOpen =
+        false;
+
 
     completedTasks.classList.add(
         "hidden"
     );
+
 
     completedArrow.textContent =
         "▼";
 
 
     renderTasks();
+
 
     newTaskInput.focus();
 }
@@ -440,6 +848,7 @@ backToCalendar.addEventListener(
             "hidden"
         );
 
+
         calendarPage.classList.remove(
             "hidden"
         );
@@ -447,6 +856,7 @@ backToCalendar.addEventListener(
 
         displayedYear =
             selectedDate.getFullYear();
+
 
         displayedMonth =
             selectedDate.getMonth();
@@ -490,7 +900,10 @@ previousDay.addEventListener(
     function () {
 
         const newDate =
-            new Date(selectedDate);
+            new Date(
+                selectedDate
+            );
+
 
         newDate.setDate(
             newDate.getDate() - 1
@@ -500,6 +913,7 @@ previousDay.addEventListener(
         if (
             newDate.getFullYear() < MIN_YEAR
         ) {
+
             return;
         }
 
@@ -522,7 +936,10 @@ nextDay.addEventListener(
     function () {
 
         const newDate =
-            new Date(selectedDate);
+            new Date(
+                selectedDate
+            );
+
 
         newDate.setDate(
             newDate.getDate() + 1
@@ -532,6 +949,7 @@ nextDay.addEventListener(
         if (
             newDate.getFullYear() > MAX_YEAR
         ) {
+
             return;
         }
 
@@ -555,13 +973,18 @@ function addTask() {
         newTaskInput.value.trim();
 
 
-    if (text === "") {
+    if (
+        text === ""
+    ) {
+
         return;
     }
 
 
     const tasks =
-        getTasksForDate(selectedDate);
+        getTasksForDate(
+            selectedDate
+        );
 
 
     const newTask = {
@@ -574,7 +997,9 @@ function addTask() {
     };
 
 
-    tasks.push(newTask);
+    tasks.push(
+        newTask
+    );
 
 
     saveTasksForDate(
@@ -583,7 +1008,8 @@ function addTask() {
     );
 
 
-    newTaskInput.value = "";
+    newTaskInput.value =
+        "";
 
 
     renderTasks();
@@ -613,7 +1039,9 @@ newTaskInput.addEventListener(
     "keydown",
     function (event) {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
 
             event.preventDefault();
 
@@ -632,54 +1060,73 @@ function renderTasks() {
     updateCurrentDate();
 
 
-    activeTasks.innerHTML = "";
+    activeTasks.innerHTML =
+        "";
 
-    completedTasks.innerHTML = "";
+
+    completedTasks.innerHTML =
+        "";
 
 
     const tasks =
-        getTasksForDate(selectedDate);
+        getTasksForDate(
+            selectedDate
+        );
 
 
     const active =
         tasks.filter(
-            task => !task.completed
+            task =>
+                !task.completed
         );
 
 
     const completed =
         tasks.filter(
-            task => task.completed
+            task =>
+                task.completed
         );
 
 
-    // Tarefas ativas
+    // ======================================
+    // TAREFAS ATIVAS
+    // ======================================
 
     active.forEach(
         task => {
 
             activeTasks.appendChild(
-                createTaskElement(task)
+                createTaskElement(
+                    task
+                )
             );
         }
     );
 
 
-    // Tarefas concluídas
+    // ======================================
+    // TAREFAS CONCLUÍDAS
+    // ======================================
 
     completed.forEach(
         task => {
 
             completedTasks.appendChild(
-                createTaskElement(task)
+                createTaskElement(
+                    task
+                )
             );
         }
     );
 
 
-    // Mensagem quando não há tarefas
+    // ======================================
+    // MENSAGEM
+    // ======================================
 
-    if (active.length === 0) {
+    if (
+        active.length === 0
+    ) {
 
         emptyMessage.style.display =
             "block";
@@ -691,7 +1138,9 @@ function renderTasks() {
     }
 
 
-    // Contador
+    // ======================================
+    // CONTADOR
+    // ======================================
 
     completedCount.textContent =
         completed.length;
@@ -699,19 +1148,24 @@ function renderTasks() {
 
 
 // ==========================================
-// CRIAR UMA TAREFA NA TELA
+// CRIAR TAREFA
 // ==========================================
 
 function createTaskElement(task) {
 
     const item =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     item.className =
         "task-item";
 
 
-    if (task.completed) {
+    if (
+        task.completed
+    ) {
 
         item.classList.add(
             "completed"
@@ -719,16 +1173,23 @@ function createTaskElement(task) {
     }
 
 
-    // Checkbox
+    // ======================================
+    // CHECKBOX
+    // ======================================
 
     const checkbox =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
+
 
     checkbox.type =
         "checkbox";
 
+
     checkbox.className =
         "task-checkbox";
+
 
     checkbox.checked =
         task.completed;
@@ -738,33 +1199,48 @@ function createTaskElement(task) {
         "change",
         function () {
 
-            toggleTask(task.id);
+            toggleTask(
+                task.id
+            );
         }
     );
 
 
-    // Texto
+    // ======================================
+    // TEXTO
+    // ======================================
 
     const text =
-        document.createElement("span");
+        document.createElement(
+            "span"
+        );
+
 
     text.className =
         "task-text";
+
 
     text.textContent =
         task.text;
 
 
-    // Botão excluir
+    // ======================================
+    // BOTÃO EXCLUIR
+    // ======================================
 
     const deleteButton =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
+
 
     deleteButton.type =
         "button";
 
+
     deleteButton.className =
         "delete-task";
+
 
     deleteButton.textContent =
         "✕";
@@ -774,18 +1250,26 @@ function createTaskElement(task) {
         "click",
         function () {
 
-            deleteTask(task.id);
+            deleteTask(
+                task.id
+            );
         }
     );
 
+
+    // ======================================
+    // ADICIONAR ELEMENTOS
+    // ======================================
 
     item.appendChild(
         checkbox
     );
 
+
     item.appendChild(
         text
     );
+
 
     item.appendChild(
         deleteButton
@@ -803,16 +1287,20 @@ function createTaskElement(task) {
 function toggleTask(taskId) {
 
     const tasks =
-        getTasksForDate(selectedDate);
+        getTasksForDate(
+            selectedDate
+        );
 
 
     const task =
         tasks.find(
-            item => item.id === taskId
+            item =>
+                item.id === taskId
         );
 
 
     if (!task) {
+
         return;
     }
 
@@ -834,18 +1322,21 @@ function toggleTask(taskId) {
 
 
 // ==========================================
-// EXCLUIR
+// EXCLUIR TAREFA
 // ==========================================
 
 function deleteTask(taskId) {
 
     const tasks =
-        getTasksForDate(selectedDate);
+        getTasksForDate(
+            selectedDate
+        );
 
 
     const newTasks =
         tasks.filter(
-            task => task.id !== taskId
+            task =>
+                task.id !== taskId
         );
 
 
@@ -862,7 +1353,7 @@ function deleteTask(taskId) {
 
 
 // ==========================================
-// ABRIR/FECHAR CONCLUÍDAS
+// ABRIR / FECHAR CONCLUÍDAS
 // ==========================================
 
 toggleCompleted.addEventListener(
@@ -873,11 +1364,14 @@ toggleCompleted.addEventListener(
             !completedIsOpen;
 
 
-        if (completedIsOpen) {
+        if (
+            completedIsOpen
+        ) {
 
             completedTasks.classList.remove(
                 "hidden"
             );
+
 
             completedArrow.textContent =
                 "▲";
@@ -887,6 +1381,7 @@ toggleCompleted.addEventListener(
             completedTasks.classList.add(
                 "hidden"
             );
+
 
             completedArrow.textContent =
                 "▼";
