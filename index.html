@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Agenda</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Ícone e configuração do aplicativo -->
+    <link rel="manifest" href="manifest.json">
+
+</head>
+
+<body>
+
+    <!-- =================================
+         PÁGINA DO CALENDÁRIO
+    ================================== -->
+
+    <main id="calendarPage">
+
+        <header class="main-header">
+
+            <div class="logo">
+
+                <img
+                    src="logo.jpg"
+                    alt="Logo da Agenda"
+                >
+
+                <span>Agenda</span>
+
+            </div>
+
+
+            <h1>
+                Meu calendário
+            </h1>
+
+        </header>
+
+
+        <section class="calendar-container">
+
+            <div class="calendar-top">
+
+                <button
+                    id="previousMonth"
+                    type="button"
+                >
+                    ←
+                </button>
+
+
+                <h2 id="monthTitle">
+                    Setembro de 2026
+                </h2>
+
+
+                <button
+                    id="nextMonth"
+                    type="button"
+                >
+                    →
+                </button>
+
+            </div>
+
+
+            <div class="weekdays">
+
+                <div>DOM</div>
+                <div>SEG</div>
+                <div>TER</div>
+                <div>QUA</div>
+                <div>QUI</div>
+                <div>SEX</div>
+                <div>SÁB</div>
+
+            </div>
+
+
+            <div
+                id="calendar"
+                class="calendar-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         PÁGINA DE TAREFAS
+    ================================== -->
+
+    <main
+        id="tasksPage"
+        class="hidden"
+    >
+
+        <header class="tasks-header">
+
+
+            <button
+                id="backToCalendar"
+                type="button"
+            >
+                ←
+            </button>
+
+
+
+            <div class="date-navigation">
+
+
+                <button
+                    id="previousDay"
+                    type="button"
+                >
+                    ←
+                </button>
+
+
+
+                <div class="date-information">
+
+                    <div>
+                        Lista de tarefas
+                    </div>
+
+
+                    <h1 id="currentDate"></h1>
+
+                </div>
+
+
+
+                <button
+                    id="nextDay"
+                    type="button"
+                >
+                    →
+                </button>
+
+
+            </div>
+
+        </header>
+
+
+
+        <section class="tasks-container">
+
+
+            <!-- NOVA TAREFA -->
+
+            <div class="new-task-container">
+
+                <input
+                    type="text"
+                    id="newTaskInput"
+                    placeholder="Adicionar uma nova tarefa..."
+                    autocomplete="off"
+                >
+
+
+                <button
+                    id="addTaskButton"
+                    type="button"
+                >
+                    +
+                </button>
+
+            </div>
+
+
+
+            <!-- TAREFAS ATIVAS -->
+
+            <div
+                id="activeTasks"
+                class="task-list"
+            ></div>
+
+
+            <div
+                id="emptyMessage"
+                class="empty-message"
+            >
+                Nenhuma tarefa para este dia.
+            </div>
+
+
+
+            <!-- TAREFAS CONCLUÍDAS -->
+
+            <section class="completed-section">
+
+                <button
+                    id="toggleCompleted"
+                    class="completed-header"
+                    type="button"
+                >
+
+                    <span>
+                        Tarefas concluídas
+                    </span>
+
+
+                    <span id="completedCount">
+                        0
+                    </span>
+
+
+                    <span id="completedArrow">
+                        ▼
+                    </span>
+
+                </button>
+
+
+                <div
+                    id="completedTasks"
+                    class="task-list hidden"
+                ></div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

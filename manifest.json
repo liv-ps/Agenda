@@ -1,0 +1,22 @@
+{
+    "name": "Agenda",
+    "short_name": "Agenda",
+    "description": "Minha agenda de tarefas",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#7b2cbf",
+    "theme_color": "#7b2cbf",
+
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

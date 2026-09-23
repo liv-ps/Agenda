@@ -1,0 +1,459 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #7b2cbf;
+    color: white;
+}
+
+/* =========================
+   CLASSES GERAIS
+========================= */
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================
+   CABEÇALHO DO CALENDÁRIO
+========================= */
+
+.main-header {
+    width: 100%;
+    padding: 25px 45px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main-header h1 {
+    font-size: 36px;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+}
+
+/* =========================
+   CALENDÁRIO
+========================= */
+
+.calendar-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 35px;
+    background: white;
+    color: #222;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================
+   TOPO DO CALENDÁRIO
+========================= */
+
+.calendar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.calendar-top h2 {
+    font-size: 30px;
+    color: #7b2cbf;
+    text-align: center;
+}
+
+.calendar-top button {
+    width: 55px;
+    height: 55px;
+    border: none;
+    border-radius: 50%;
+    background: #7b2cbf;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.calendar-top button:hover {
+    background: #5a189a;
+}
+
+/* =========================
+   DIAS DA SEMANA
+========================= */
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.weekdays div {
+    text-align: center;
+    color: #7b2cbf;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+/* =========================
+   DIAS DO CALENDÁRIO
+========================= */
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.calendar-day {
+    min-height: 90px;
+    border: 2px solid #eeeeee;
+    border-radius: 12px;
+    background: #fafafa;
+    color: #222;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.calendar-day:hover {
+    background: #f0e3ff;
+    border-color: #7b2cbf;
+    transform: translateY(-2px);
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.empty:hover {
+    transform: none;
+    background: transparent;
+}
+
+.calendar-day.today {
+    background: #7b2cbf;
+    color: white;
+    border-color: #7b2cbf;
+}
+
+/* Indicador de tarefas */
+
+.task-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 25px;
+    color: #7b2cbf;
+}
+
+.calendar-day.today .task-indicator {
+    color: white;
+}
+
+/* =========================
+   PÁGINA DE TAREFAS
+========================= */
+
+.tasks-header {
+    padding: 25px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.tasks-header > button {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: #7b2cbf;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.date-navigation {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.date-navigation button {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    color: #7b2cbf;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.date-information {
+    text-align: center;
+}
+
+.date-information h1 {
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+/* =========================
+   CONTAINER DAS TAREFAS
+========================= */
+
+.tasks-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* =========================
+   ADICIONAR TAREFA
+========================= */
+
+.new-task-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+#newTaskInput {
+    flex: 1;
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    padding: 0 18px;
+    font-size: 17px;
+    outline: none;
+}
+
+#addTaskButton {
+    width: 55px;
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    background: #222;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* =========================
+   TAREFAS
+========================= */
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-item {
+    min-height: 58px;
+    background: white;
+    color: #222;
+    border-radius: 12px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-checkbox {
+    width: 21px;
+    height: 21px;
+    cursor: pointer;
+    accent-color: #7b2cbf;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 16px;
+    word-break: break-word;
+}
+
+.delete-task {
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.delete-task:hover {
+    color: red;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #888;
+}
+
+/* =========================
+   MENSAGEM VAZIA
+========================= */
+
+.empty-message {
+    text-align: center;
+    padding: 25px;
+    color: white;
+}
+
+/* =========================
+   TAREFAS CONCLUÍDAS
+========================= */
+
+.completed-section {
+    margin-top: 30px;
+}
+
+.completed-header {
+    width: 100%;
+    min-height: 55px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    color: white;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.completed-header span:first-child {
+    flex: 1;
+    text-align: left;
+    font-weight: bold;
+}
+
+#completedCount {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    color: #7b2cbf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.completed-list {
+    margin-top: 10px;
+}
+
+/* =========================
+   CELULAR
+========================= */
+
+@media (max-width: 700px) {
+
+    .main-header {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .main-header h1 {
+        font-size: 28px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .logo img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .calendar-container {
+        width: 95%;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .calendar-top h2 {
+        font-size: 22px;
+    }
+
+    .calendar-top button {
+        width: 42px;
+        height: 42px;
+        font-size: 23px;
+    }
+
+    .weekdays {
+        gap: 4px;
+    }
+
+    .weekdays div {
+        font-size: 11px;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        min-height: 55px;
+        padding: 7px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    .tasks-header {
+        padding: 15px;
+    }
+
+    .date-navigation {
+        gap: 7px;
+    }
+
+    .date-information h1 {
+        font-size: 19px;
+    }
+
+    .tasks-container {
+        width: 94%;
+    }
+}
